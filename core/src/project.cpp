@@ -1,35 +1,47 @@
 #include "project.h"
-
 #include "error.h"
+#include <map>
+#include <stdexcept>
 
-static bool projectExists(const ProjectHash projectHash) {
-    return projects.contains(projectHash);
+
+namespace {
+    std::map<ProjectHash, Project>& getProjectsMap() {
+        static std::map<ProjectHash, Project> projects;
+        return projects;
+    }
 }
 
-static void addProject(const ProjectHash projectHash, const Project& project) {
-    projects.insert({projectHash, project});
+static bool projectExists(const ProjectHash& projectHash) {
+    return getProjectsMap().contains(projectHash);
 }
-
-static void removeProject(const ProjectHash projectHash) {
-    projects.erase(projectHash);
-}
-
-static Project& getProject(const ProjectHash projectHash) {projects[projectHash]; }
 
 SessionId openProject(const Path& projectRoot) {
     SessionId sessionId = newSession(projectRoot);
     ProjectHash projectHash = sessionId.parts.projectHash;
-    if (projectExists(projectHash)) getProject(projectHash).openings++;
-    addProject(sessionId.parts.projectHash, Project(projectRoot));
+
+    auto& projects = getProjectsMap();
+    auto& project = projects[projectHash];
+
+    if (project.openings == 0 && project.path.empty()) {
+        project.path = projectRoot;
+    }
+
+    project.openings++;
     return sessionId;
 }
 
 void closeProject(SessionId sessionId) {
     ProjectHash projectHash = sessionId.parts.projectHash;
-    if (projectExists(projectHash)) {
-        getProject(projectHash).openings--;
-        if (getProject(projectHash).openings == 0) removeProject(projectHash);
+    auto& projects = getProjectsMap();
+
+    auto it = projects.find(projectHash);
+    if (it != projects.end()) {
+        it->second.openings--;
+        if (it->second.openings == 0) {
+            projects.erase(it);
+        }
         return;
     }
-    throw std::runtime_error("No session found");
+
+    throw std::runtime_error("No project found for this session");
 }

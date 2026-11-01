@@ -18,8 +18,6 @@ struct Project {
     State state;
 };
 
-std::map<ProjectHash, Project> projects;
-
 
 SessionId openProject(const Path& projectRoot);
 void closeProject(SessionId id);
