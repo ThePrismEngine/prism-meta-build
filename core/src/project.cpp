@@ -1,4 +1,5 @@
 #include "project.h"
+#include "project_internal.h"
 #include "error.h"
 #include <map>
 #include <stdexcept>
@@ -9,6 +10,10 @@ namespace {
         static std::map<ProjectHash, Project> projects;
         return projects;
     }
+}
+
+Project& getProject(const SessionId sessionId) {
+    return getProjectsMap().at(sessionId.parts.projectHash);
 }
 
 static bool projectExists(const ProjectHash& projectHash) {

@@ -1,12 +1,16 @@
 #pragma once
-#include <filesystem>
-#include <map>
 
 #include "session.h"
 
 
 struct State {
-    std::string dslFilesSeparator = "-";
+    struct Config {
+        std::string filename;
+    } config;
+
+    struct DslFiles {
+        std::string dslFilesSeparator = "-";
+    } dslFiles;
 };
 
 struct Project {

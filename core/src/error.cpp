@@ -1,6 +1,7 @@
 #include "error.h"
+#include "session_internal.h"
 
-static void callError(SessionId session, const ErrorType type, const std::string& message) {
+void callError(SessionId session, const ErrorType type, const std::string& message) {
     if (sessions.find(session) != sessions.end()) {
         sessions[session].errors.push(Error(message, type));
     } else {
@@ -13,5 +14,6 @@ static Error getError(SessionId session) {
     if (sessions.find(session) != sessions.end()) {
         return sessions[session].errors.front();
     }
+    throw std::runtime_error("No error found for session");
 }
 

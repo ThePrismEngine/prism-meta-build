@@ -1,16 +1,18 @@
 set(MBS_CORE_SOURCES
-        src/project.cpp
         src/error.cpp
         src/session.cpp
+        src/project.cpp
+        src/state.cpp
 )
 
 set(MBS_CORE_HEADERS
         include/prism-mbs.h
+        include/project_internal.h
         include/project.h
-        include/error.h
         include/session.h
+        include/error.h
         include/state.h
-        src/state.cpp
+        include/abi/project.h
 )
 
 add_library(mbs_core STATIC ${MBS_CORE_SOURCES} ${MBS_CORE_HEADERS})

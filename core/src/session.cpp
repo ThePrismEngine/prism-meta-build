@@ -1,7 +1,23 @@
-#include "session.h"
+#include "session_internal.h"
 
 #include <filesystem>
 #include <random>
+
+
+namespace {
+    std::map<SessionId, Session>& getSessionsMap() {
+        static std::map<SessionId, Session> sessions;
+        return sessions;
+    }
+}
+
+Session& getSession(const SessionId sessionId) {
+    getSessionsMap().at(sessionId);
+}
+
+bool sessionExists(const SessionId sessionId) {
+    return getSessionsMap().contains(sessionId);
+}
 
 static ConnectionId generateConnectionId() {
     thread_local std::random_device rd;
@@ -19,9 +35,9 @@ SessionId newSession(const Path& projectRoot) {
     SessionId id;
     id.parts.projectHash = hash_value(projectRoot);
     id.parts.connectionId = generateConnectionId();
-    sessions.insert({id, Session()});
+    getSessionsMap().insert({id, Session()});
 };
 
 void deleteSession(const SessionId sessionId) {
-    sessions.erase(sessionId);
+    getSessionsMap().erase(sessionId);
 }
