@@ -36,6 +36,7 @@ SessionId newSession(const Path& projectRoot) {
     id.parts.projectHash = hash_value(projectRoot);
     id.parts.connectionId = generateConnectionId();
     getSessionsMap().insert({id, Session()});
+    return id;
 };
 
 void deleteSession(const SessionId sessionId) {
