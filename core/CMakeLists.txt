@@ -3,6 +3,7 @@ set(MBS_CORE_SOURCES
         src/session.cpp
         src/project.cpp
         src/state.cpp
+        src/abi.cpp
 )
 
 set(MBS_CORE_HEADERS
@@ -12,7 +13,8 @@ set(MBS_CORE_HEADERS
         include/session.h
         include/error.h
         include/state.h
-        include/abi/project.h
+        include/abi.h
+        include/abi_macros.h
 )
 
 add_library(mbs_core STATIC ${MBS_CORE_SOURCES} ${MBS_CORE_HEADERS})
